@@ -12,13 +12,13 @@ class CasumoModule extends CasinoModuleBase {
       registrationService
     );
 
-    this.url = "https://url-where-the-spin-requests-are-sent";
+    this.url = "https://casumo-game.casinomodule.com";
   }
 
   getDepositLink() {
     return {
       cookies: this.casinoCookie,
-      url: "https://url-to-deposit"
+      url: "https://www.casumo.com"
     };
   }
 }
