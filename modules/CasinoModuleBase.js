@@ -12,20 +12,20 @@ class CasinoModuleBase {
     this.casinoCookie = "";
   }
 
-  async registerAccount(account) {
+  async register(user) {
     if (!this.registrationService) {
       throw Error("Registration not implemented.");
     }
 
-    this.casinoCookie = await this.registrationService.registerAccount(account);
+    this.casinoCookie = await this.registrationService.register(user);
   }
 
-  async login(username, password) {
+  async login(user) {
     if (!this.loginService) {
       return;
     }
     console.log("Logging in...");
-    this.casinoCookie = await this.loginService.login(username, password);
+    this.casinoCookie = await this.loginService.login(user);
   }
 
   getSlotSession(slotSettings) {
