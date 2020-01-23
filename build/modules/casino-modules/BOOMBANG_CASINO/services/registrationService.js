@@ -45,9 +45,9 @@ async function register(user) {
   const response = await fetch("https://www.boombangcasino.com/webproxy", {
     method: "POST",
     headers: {
-      referrer: "https://www.boombangcasino.com/registration",
       ...userAgentHeader,
-      ...formHeader
+      ...formHeader,
+      origin: "https://www.boombangcasino.com/registration"
     },
     body: queryString.stringify(body)
   });
