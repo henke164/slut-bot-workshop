@@ -12,24 +12,24 @@ const captchaSettings = {
   googleKey: "google-key"
 };
 
-async function registerAccount(account) {
+async function registerAccount(user) {
   console.log("Solving captcha...");
   const captcha = await decodeCaptcha(captchaSettings);
 
   const body = {
-    email: account.email,
-    country: account.countryCode,
-    currency: account.currency,
-    password_confirmation: account.password,
+    email: user.email,
+    country: user.countryCode,
+    currency: user.currency,
+    password_confirmation: user.password,
     receive_promos: false,
     receive_sms_promos: false,
-    password: account.password,
-    first_name: account.firstName,
-    last_name: account.lastName,
-    city: account.city,
-    address: account.address,
-    postal_code: account.postalCode,
-    date_of_birth: `${account.birth.year}-${account.birth.month}-${account.birth.day}`,
+    password: user.password,
+    first_name: user.firstName,
+    last_name: user.lastName,
+    city: user.city,
+    address: user.address,
+    postal_code: user.postalCode,
+    date_of_birth: `${user.birth.year}-${user.birth.month}-${user.birth.day}`,
     terms_acceptance: true,
     age_acceptance: true,
     captcha

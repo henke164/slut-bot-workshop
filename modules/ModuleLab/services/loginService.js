@@ -5,10 +5,10 @@ const {
 } = require("../../../utilities/cookieHelper");
 const { userAgentHeader, jsonHeader } = require("../../../utilities/headers");
 
-async function login(username, password) {
+async function login(user) {
   const body = {
-    username,
-    password
+    username: user.username,
+    password: user.password
   };
 
   const response = await fetch("casino-login-url", {

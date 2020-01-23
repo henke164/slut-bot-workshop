@@ -1,10 +1,9 @@
 {
-  "username": "yf1@gmail.com",
-  "password": "MyPassword1!",
   "slotId": "starburst_not_mobile_sw/4023",
-  "registerAccount": {
-    "email": "yf1@gmail.com",
+  "user": {
+    "username": "MyUsername",
     "password": "MyPassword1!",
+    "email": "yf1@gmail.com",
     "firstName": "Okarsh",
     "lastName": "AffeXSa",
     "birth": {
