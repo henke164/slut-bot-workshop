@@ -4,37 +4,27 @@ const {
   getCookieStringFromResponse
 } = require("../../../utilities/cookieHelper");
 const { userAgentHeader, jsonHeader } = require("../../../utilities/headers");
-const { decodeCaptcha } = require("../../../services/captchaService");
 
-const captchaSettings = {
-  apiKey: "6LeswJMUAAAAADIoxCwxvvyJ-QCORFD-W0JMJYpW",
-  url: "https://www.casumo.com",
-  googleKey: "google-key"
-};
-
-async function registerAccount(account) {
-  // console.log("Solving captcha...");
-  // const captcha = await decodeCaptcha(captchaSettings);
-
+async function registerAccount(user) {
     const body = {
-        casumoName: account.firstName + Math.random().toString(36).substring(7),
-        email: account.email,
-        plainTextPassword: account.password,
-        name: {firstName: account.firstName, lastName: account.lastName},
+        casumoName: user.firstName + Math.random().toString(36).substring(7),
+        email: user.email,
+        plainTextPassword: user.password,
+        name: {firstName: user.firstName, lastName: user.lastName},
         primaryAddress: {
-            country: account.countryCode,
+            country: user.countryCode,
             addressLines: {
-                street: account.address,
-                zip: account.postalCode,
-                city: account.city
+                street: user.address,
+                zip: user.postalCode,
+                city: user.city
             }
         },
-        nationality: account.countryCode,
-        dateOfBirth: account.birth,
-        gender: account.gender,
+        nationality: user.countryCode,
+        dateOfBirth: user.birth,
+        gender: user.gender,
         phoneNumber: {
-            prefix: account.phone.split('-')[0],
-            number: account.phone.split('-')[1]
+            prefix: user.phone.split('-')[0],
+            number: user.phone.split('-')[1]
         },
         subscribeToMarketingMaterial: false,
         socialSecurityNumber: ""
