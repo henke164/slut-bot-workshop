@@ -42,9 +42,6 @@ async function register(user) {
     body: JSON.stringify(body)
   });
 
-  const responseJson = await response.json();
-  console.log(responseJson);
-
   if (response.status !== 200) {
     throw Error(JSON.stringify("Error"));
   }
