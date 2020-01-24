@@ -1,44 +1,102 @@
-// THIS IS EXAMPLE CODE
 const fetch = require("node-fetch");
 const {
   getCookieStringFromResponse
 } = require("../../../utilities/cookieHelper");
 const { userAgentHeader, jsonHeader } = require("../../../utilities/headers");
-const { decodeCaptcha } = require("../../../services/captchaService");
 
-const captchaSettings = {
-  apiKey: "08a69d4ec6c3bdd5032c6b32ca8fca2c",
-  url: "casino-url",
-  googleKey: "google-key"
-};
+async function verifySMS(account) {
+  const phoneParts = account.phone.split("-");
+  const resp = await fetch("https://www.wildz.com/api/verifysms", {
+    headers: {
+      ...jsonHeader,
+      ...userAgentHeader
+    },
+    body: {
+      Phone: `+${phoneParts[0]}${phoneParts[1]}`,
+      PhonePrefix: `+${phoneParts[0]}`,
+      Email: account.email,
+      Locale: "en"
+    }
+  });
+
+  const { data } = await resp.json();
+
+  if (!data.successq) {
+    throw Error("Failed on verifying sms");
+  }
+
+  return new Promise(resolve => {
+    console.log("Waiting for verification code");
+    const interval = setInterval(() => {
+      const fs = require("fs");
+      const pin = fs.readFileSync("./pin.txt");
+      global.phoneVerification = pin.toString("utf8");
+      if (global.phoneVerification) {
+        console.log(`Verification code ${global.phoneVerification} received`);
+        clearInterval(interval);
+        resolve(global.phoneVerification);
+      }
+    }, 2000);
+  });
+}
+
+function pad(s) {
+  return s.padStart(2, "0");
+}
+
+async function getCountryIdFromCountryCode(countryCode) {
+  const resp = await fetch("https://www.wildz.com/en/register");
+  const html = await resp.text();
+  const regex = /<option data-code=[A-Z]{2} value=\d+>/g;
+  let foundElement = null;
+
+  let regexResult;
+
+  do {
+    regexResult = regex.exec(html);
+    if (regexResult) {
+      const element = regexResult[0];
+      if (element.indexOf(`=${countryCode} v`) > 0) {
+        foundElement = element;
+      }
+    }
+  } while (regexResult);
+
+  if (foundElement === null) {
+    throw new Error("No country found for phone number.");
+  }
+
+  return /value=\d+/.exec(foundElement)[0].replace("value=", "");
+}
 
 async function registerAccount(account) {
   console.log("Solving captcha...");
-  const captcha = await decodeCaptcha(captchaSettings);
-
+  const pin = await verifySMS(account);
+  console.log(pin);
   const body = {
     email: account.email,
-    country: account.countryCode,
-    currency: account.currency,
-    password_confirmation: account.password,
-    receive_promos: false,
-    receive_sms_promos: false,
     password: account.password,
-    first_name: account.firstName,
-    last_name: account.lastName,
+    phone: `+${account.phone.replace("-")}`,
+    firstName: account.firstName,
+    lastName: account.lastName,
+    address1: account.address,
+    postalCode: account.postalCode,
     city: account.city,
-    address: account.address,
-    postal_code: account.postalCode,
-    date_of_birth: `${account.birth.year}-${account.birth.month}-${account.birth.day}`,
-    terms_acceptance: true,
-    age_acceptance: true,
-    captcha
+    countryID: await getCountryIdFromCountryCode(account.countryCode),
+    sexID: account.gender === "MALE" ? 1 : 2,
+    birthDate: `${account.birth.year}-${pad(account.birth.month)}-${pad(
+      account.birth.day
+    )}T00:00:00.000Z`,
+    pin: pin,
+    consents: [1, 2, 3, 4, 5, 6],
+    timezoneOffset: -60,
+    referer: "https://www.google.com/"
   };
 
   console.log("Registering account", body);
 
   // @ts-ignore
-  const response = await fetch("registration-url", {
+  const response = await fetch("https://www.wildz.com/api/register", {
     method: "POST",
     headers: {
       ...userAgentHeader,
@@ -48,9 +106,11 @@ async function registerAccount(account) {
   });
 
   if (response.status !== 200) {
+    console.log(await response.text());
     throw Error(JSON.stringify("Error"));
   }
-
+  console.log("Success");
+  console.log(await response.text());
   return getCookieStringFromResponse(response);
 }
 
