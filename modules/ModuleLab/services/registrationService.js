@@ -69,11 +69,12 @@ async function getCountryIdFromCountryCode(countryCode) {
   return /value=\d+/.exec(foundElement)[0].replace("value=", "");
 }
 
-async function registerAccount(account) {
+async function register(user) {
   console.log("Solving captcha...");
   const pin = await verifySMS(account);
   console.log(pin);
   const body = {
+<<<<<<< HEAD
     email: account.email,
     password: account.password,
     phone: `+${account.phone.replace("-")}`,
@@ -91,9 +92,27 @@ async function registerAccount(account) {
     consents: [1, 2, 3, 4, 5, 6],
     timezoneOffset: -60,
     referer: "https://www.google.com/"
+=======
+    email: user.email,
+    country: user.countryCode,
+    currency: user.currency,
+    password_confirmation: user.password,
+    receive_promos: false,
+    receive_sms_promos: false,
+    password: user.password,
+    first_name: user.firstName,
+    last_name: user.lastName,
+    city: user.city,
+    address: user.address,
+    postal_code: user.postalCode,
+    date_of_birth: `${user.birth.year}-${user.birth.month}-${user.birth.day}`,
+    terms_acceptance: true,
+    age_acceptance: true,
+    captcha
+>>>>>>> 9fe110b8fa3ac6fbf25d9a2ece5e854e2152b5d5
   };
 
-  console.log("Registering account", body);
+  console.log("Registering user", body);
 
   // @ts-ignore
   const response = await fetch("https://www.wildz.com/api/register", {
@@ -115,5 +134,5 @@ async function registerAccount(account) {
 }
 
 module.exports = {
-  registerAccount
+  register
 };
