@@ -1,5 +1,5 @@
 const CasinoModule = require("./modules/ModuleLab/Module");
-const { user, slotId } = require("./settings.json");
+const { user, slotId, authCookie } = require("./settings.json");
 const stdin = process.openStdin();
 
 const casinoModule = new CasinoModule();
@@ -24,10 +24,11 @@ stdin.addListener("data", async d => {
       console.log("Done");
       break;
     case 2:
-      const cookieString = await casinoModule.login(user);
-      console.log("Cookies", cookieString);
+      await casinoModule.login(user);
+      console.log("Cookies", casinoModule.casinoCookie);
       break;
     case 3:
+      casinoModule.casinoCookie = authCookie;
       const session = await casinoModule.getSlotSession(slotSettings);
       console.log(session);
       break;

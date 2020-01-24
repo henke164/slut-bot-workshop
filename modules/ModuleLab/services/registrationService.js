@@ -36,9 +36,6 @@ async function verifySMS(user) {
   return new Promise(resolve => {
     console.log("Waiting for verification code");
     const interval = setInterval(() => {
-      const fs = require("fs");
-      const pin = fs.readFileSync("./pin.txt");
-      global.phoneVerification = pin.toString("utf8");
       if (global.phoneVerification) {
         console.log(`Verification code ${global.phoneVerification} received`);
         clearInterval(interval);
@@ -49,7 +46,7 @@ async function verifySMS(user) {
 }
 
 function pad(s) {
-  return s.padStart(2, "0");
+  return s.toString().padStart(2, "0");
 }
 
 async function getCountryIdFromCountryCode(countryCode) {
@@ -74,16 +71,16 @@ async function getCountryIdFromCountryCode(countryCode) {
     throw new Error("No country found for phone number.");
   }
 
-  return /value=\d+/.exec(foundElement)[0].replace("value=", "");
+  return parseInt(/value=\d+/.exec(foundElement)[0].replace("value=", ""));
 }
 
 async function register(user) {
   const pin = await verifySMS(user);
-  console.log(pin);
+
   const body = {
     email: user.email,
     password: user.password,
-    phone: `+${user.phone.replace("-")}`,
+    phone: `+${user.phone.replace("-", "")}`,
     firstName: user.firstName,
     lastName: user.lastName,
     address1: user.address,
@@ -107,7 +104,10 @@ async function register(user) {
     method: "POST",
     headers: {
       ...userAgentHeader,
-      ...jsonHeader
+      ...jsonHeader,
+      "x-requested-with": "XMLHttpRequest",
+      "x-tenant": "wildz",
+      origin: "https://www.wildz.com"
     },
     body: JSON.stringify(body)
   });
@@ -116,7 +116,6 @@ async function register(user) {
     console.log(await response.text());
     throw Error(JSON.stringify("Error"));
   }
-  console.log("Success");
   console.log(await response.text());
   return getCookieStringFromResponse(response);
 }

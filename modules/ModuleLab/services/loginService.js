@@ -1,22 +1,20 @@
-// THIS IS EXAMPLE CODE
 const fetch = require("node-fetch");
-const {
-  getCookieStringFromResponse
-} = require("../../../utilities/cookieHelper");
 const { userAgentHeader, jsonHeader } = require("../../../utilities/headers");
 
 async function login(user) {
   const body = {
-    username: user.username, // or user.email
-    password: user.password
+    Username: user.email,
+    Password: user.password
   };
 
-  const response = await fetch("casino-login-url", {
+  const response = await fetch("https://www.wildz.com/api/login", {
     method: "POST",
     headers: {
       ...userAgentHeader,
       ...jsonHeader,
-      origin: "casino-url"
+      "x-requested-with": "XMLHttpRequest",
+      "x-tenant": "wildz",
+      origin: "https://www.wildz.com"
     },
     body: JSON.stringify(body)
   });
@@ -25,7 +23,13 @@ async function login(user) {
     throw Error("Login failed!");
   }
 
-  return getCookieStringFromResponse(response);
+  console.log("Response", response.status);
+  try {
+    const json = await response.json();
+    return `Auth=${json.data.token}`;
+  } catch (e) {
+    throw Error("Login failed!");
+  }
 }
 
 module.exports = {
