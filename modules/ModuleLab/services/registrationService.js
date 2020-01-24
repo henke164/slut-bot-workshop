@@ -4,24 +4,32 @@ const {
 } = require("../../../utilities/cookieHelper");
 const { userAgentHeader, jsonHeader } = require("../../../utilities/headers");
 
-async function verifySMS(account) {
-  const phoneParts = account.phone.split("-");
+async function verifySMS(user) {
+  const phoneParts = user.phone.split("-");
+  const body = {
+    Phone: `+${phoneParts[0]}${phoneParts[1]}`,
+    PhonePrefix: `+${phoneParts[0]}`,
+    Email: user.email,
+    Locale: "en"
+  };
+
+  console.log(body);
+
   const resp = await fetch("https://www.wildz.com/api/verifysms", {
+    method: "POST",
     headers: {
       ...jsonHeader,
-      ...userAgentHeader
+      ...userAgentHeader,
+      "x-requested-with": "XMLHttpRequest",
+      "x-tenant": "wildz",
+      origin: "https://www.wildz.com"
     },
-    body: {
-      Phone: `+${phoneParts[0]}${phoneParts[1]}`,
-      PhonePrefix: `+${phoneParts[0]}`,
-      Email: account.email,
-      Locale: "en"
-    }
+    body: JSON.stringify(body)
   });
 
   const { data } = await resp.json();
 
-  if (!data.successq) {
+  if (!data.success) {
     throw Error("Failed on verifying sms");
   }
 
@@ -70,22 +78,21 @@ async function getCountryIdFromCountryCode(countryCode) {
 }
 
 async function register(user) {
-  console.log("Solving captcha...");
-  const pin = await verifySMS(account);
+  const pin = await verifySMS(user);
   console.log(pin);
   const body = {
-    email: account.email,
-    password: account.password,
-    phone: `+${account.phone.replace("-")}`,
-    firstName: account.firstName,
-    lastName: account.lastName,
-    address1: account.address,
-    postalCode: account.postalCode,
-    city: account.city,
-    countryID: await getCountryIdFromCountryCode(account.countryCode),
-    sexID: account.gender === "MALE" ? 1 : 2,
-    birthDate: `${account.birth.year}-${pad(account.birth.month)}-${pad(
-      account.birth.day
+    email: user.email,
+    password: user.password,
+    phone: `+${user.phone.replace("-")}`,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    address1: user.address,
+    postalCode: user.postalCode,
+    city: user.city,
+    countryID: await getCountryIdFromCountryCode(user.countryCode),
+    sexID: user.gender === "MALE" ? 1 : 2,
+    birthDate: `${user.birth.year}-${pad(user.birth.month)}-${pad(
+      user.birth.day
     )}T00:00:00.000Z`,
     pin: pin,
     consents: [1, 2, 3, 4, 5, 6],
