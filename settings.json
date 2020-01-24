@@ -1,8 +1,7 @@
 {
-  "username": "yf1@gmail.com",
-  "password": "MyPassword1!",
   "slotId": "starburst_not_mobile_sw/4023",
-  "registerAccount": {
+  "user": {
+    "username": "mazonx1337k",
     "email": "yf1@gmail.com",
     "password": "MyPassword1!",
     "firstName": "Okarsh",
@@ -15,10 +14,10 @@
     "city": "Stockholm",
     "address": "Oslogatan 5",
     "postalCode": "11255",
-    "countryCode": "PE",
+    "countryCode": "CL",
     "currency": "USD",
     "gender": "MALE",
     "language": "sv",
-    "phone": "54-59120735"
+    "phone": "55-11950105047"
   }
 }
