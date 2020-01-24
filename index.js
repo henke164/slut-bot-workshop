@@ -20,7 +20,7 @@ stdin.addListener("data", async d => {
   const selection = parseInt(d);
   switch (selection) {
     case 1:
-      await casinoModule.registerAccount(user);
+      await casinoModule.register(user);
       console.log("Done");
       break;
     case 2:

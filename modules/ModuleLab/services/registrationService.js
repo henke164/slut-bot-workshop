@@ -12,7 +12,7 @@ const captchaSettings = {
   googleKey: "google-key"
 };
 
-async function registerAccount(account) {
+async function register(account) {
   console.log("Solving captcha...");
   const captcha = await decodeCaptcha(captchaSettings);
 
@@ -55,5 +55,5 @@ async function registerAccount(account) {
 }
 
 module.exports = {
-  registerAccount
+  register
 };
