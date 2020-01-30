@@ -4,6 +4,7 @@ const {
   getCookieStringFromResponse
 } = require("../../../utilities/cookieHelper");
 const { userAgentHeader, jsonHeader } = require("../../../utilities/headers");
+const { randomInt } = require("../../../utilities/helpers");
 
 async function register(user) {
   const body = {
@@ -25,7 +26,7 @@ async function register(user) {
     currency: user.currency,
     state: "",
     voucherCode: "",
-    deviceId: 1468621770,
+    deviceId: randomInt(10),
     acceptMarketingOffers: false,
     referrerUrl: "https://www.google.com/"
   };
@@ -42,7 +43,9 @@ async function register(user) {
     body: JSON.stringify(body)
   });
 
-  if (response.status !== 200) {
+  const responseJson = await response.json();
+  if (response.status !== 200 || responseJson["status"] === "FAILURE") {
+    console.log(responseJson);
     throw Error(JSON.stringify("Error"));
   }
 
@@ -50,5 +53,5 @@ async function register(user) {
 }
 
 module.exports = {
-  registerAccount
+  register
 };

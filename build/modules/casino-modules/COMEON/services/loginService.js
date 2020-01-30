@@ -4,6 +4,7 @@ const {
   getCookieStringFromResponse
 } = require("../../../utilities/cookieHelper");
 const { userAgentHeader, jsonHeader } = require("../../../utilities/headers");
+const { randomInt } = require("../../../utilities/helpers");
 
 async function login(user) {
   const body = {
@@ -11,7 +12,7 @@ async function login(user) {
     password: user.password,
     captchaToken: "",
     isComplianceTermsAccepted: false,
-    // deviceId: 1468621770,
+    deviceId: randomInt(10),
   };
 
   const response = await fetch("https://www.comeon.com/auth/login", {
@@ -24,7 +25,9 @@ async function login(user) {
     body: JSON.stringify(body)
   });
 
-  if (response.status !== 200) {
+  var responseJson = await response.json();
+  if (response.status !== 200 || responseJson['status'] !== 'SUCCESS') {
+    console.log(responseJson);
     throw Error("Login failed!");
   }
 
