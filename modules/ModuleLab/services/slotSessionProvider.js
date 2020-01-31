@@ -2,7 +2,9 @@ const fetch = require("node-fetch");
 const { userAgentHeader } = require("../../../utilities/headers");
 
 async function getSlotSession(slotId, casinoCookies) {
-  const url = `https://omnislots.com/games/${slotId}${casinoCookies !== "" ? "?mode=real" : ""}`;
+  const url = `https://omnislots.com/games/${slotId}${
+    casinoCookies !== "" ? "?mode=real" : ""
+  }`;
   console.log(url);
   // @ts-ignore
   const response = await fetch(url, {
@@ -14,6 +16,7 @@ async function getSlotSession(slotId, casinoCookies) {
   });
 
   const html = await response.text();
+
   const foundSession = /"sessionId":"(?:[^"\\]|\\.)*/
     .exec(html)[0]
     .replace('"sessionId":"', "");
