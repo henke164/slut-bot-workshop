@@ -1,6 +1,18 @@
 const recursive = require("recursive-readdir");
 const fs = require("fs");
 const stdin = process.openStdin();
+const platform = process.platform;
+
+function writeFileSyncRecursive(filename, content, charset) {
+  // create folder path if not exists
+  filename.split('/').slice(0,-1).reduce( (last, folder)=>{
+    let folderPath = last ? (last + '/' + folder) : folder
+    if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath)
+    return folderPath
+  })
+
+  fs.writeFileSync(filename, content, charset)
+}
 
 function getModuleFiles() {
   return new Promise(resolve => {
@@ -52,7 +64,11 @@ stdin.addListener("data", async d => {
   console.log(`Publishing ${files.length + 1} files`);
   for (var x = 0; x < files.length; x++) {
     const content = fs.readFileSync(files[x]);
-    const path = files[x].replace("modules\\ModuleLab\\", "");
+    if (platform === 'darwin') {
+      var path = files[x].replace("modules/ModuleLab/", "");
+    } else {
+      var path = files[x].replace("modules\\ModuleLab\\", "");
+    }
     const pathParts = path.split("\\");
     let targetDirectory = targetRootFolder;
     for (var y = 0; y < pathParts.length - 1; y++) {
@@ -63,7 +79,7 @@ stdin.addListener("data", async d => {
       }
     }
     console.log("Writing file:", `${targetRootFolder}/${path}...`);
-    fs.writeFileSync(`${targetRootFolder}/${path}`, content);
+    writeFileSyncRecursive(`${targetRootFolder}/${path}`, content, 'UTF-8');
   }
 
   console.log("Publish complete: ", targetRootFolder);

@@ -20,15 +20,15 @@ stdin.addListener("data", async d => {
   const selection = parseInt(d);
   switch (selection) {
     case 1:
-      await casinoModule.registerAccount(registerAccount);
+      await casinoModule.register(user);
       console.log("Done");
       break;
     case 2:
-      const cookieString = await casinoModule.login(username, password);
-      console.log("Cookies", cookieString);
+      await casinoModule.login(user);
+      console.log("Cookies", casinoModule.casinoCookie);
       break;
     case 3:
-      casinoModule.casinoCookie = "sessionId=42_1580194200250714d5f47de32355f8e30569_7a4bd1bfe24cf1_0;0bf04cf90ac495ebce851f21d27d92de3792aaf32b67728b0ab35c7a5d=7c8ea63bbe84ef8511ea8b809e50190df0aa9a562e541b5b5ada5bc0c9";
+      casinoModule.casinoCookie = authCookie;
       const session = await casinoModule.getSlotSession(slotSettings);
       console.log(session);
       break;
