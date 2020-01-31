@@ -17,7 +17,7 @@ class Module extends CasinoModuleBase {
   getDepositLink() {
     return {
       cookies: this.casinoCookie,
-      url: "https://url-to-deposit"
+      url: "https://omnislots.com/account/deposits/method"
     };
   }
 }
