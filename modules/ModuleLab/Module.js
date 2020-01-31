@@ -11,8 +11,7 @@ class Module extends CasinoModuleBase {
       slotSessionProvider,
       registrationService
     );
-
-    this.url = "https://url-where-the-spin-requests-are-sent";
+    this.url = "https://egamings-game.casinomodule.com";
   }
 
   getDepositLink() {
