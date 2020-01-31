@@ -4,6 +4,7 @@ const {
   getCookieStringFromResponse
 } = require("../../../utilities/cookieHelper");
 const { userAgentHeader, jsonHeader } = require("../../../utilities/headers");
+const { randomInt } = require("../../../utilities/helpers");
 
 async function login(user) {
   const body = {
@@ -11,7 +12,7 @@ async function login(user) {
     password: user.password,
     captchaToken: "",
     isComplianceTermsAccepted: false,
-    // deviceId: 1468621770,
+    deviceId: randomInt(10),
   };
 
   const response = await fetch("https://www.mobilebet.com/auth/login", {

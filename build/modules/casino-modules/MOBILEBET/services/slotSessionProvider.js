@@ -3,23 +3,19 @@ const fetch = require("node-fetch");
 const { userAgentHeader, jsonHeader } = require("../../../utilities/headers");
 
 async function getSlotSession(slotId, casinoCookies) {
-  const response = await fetch(`https://website-slot-page/${slotId}`, {
+  const response = await fetch(`https://www.mobilebet.com/load/${slotId}/REAL/800/600`, {
     method: "GET",
     headers: {
       ...userAgentHeader,
       ...jsonHeader,
-      referer: "https://website-slot-page/",
+      referer: `https://www.mobilebet.com/en/casino/game/${slotId}/real`,
       cookie: casinoCookies
     }
   });
 
-  const html = await response.text();
-  // Find sessionid in html?
-  const foundSession = /"sessionId":"(?:[^"\\]|\\.)*/
-    .exec(html)[0]
-    .replace('"sessionId":"', "");
-
-  return foundSession;
+  const json = await response.json();
+  const jsonResponse = JSON.parse(json.result.gameLoaderResponse.data.JSON);
+  return jsonResponse.parameters.sessionId;
 }
 
 module.exports = {

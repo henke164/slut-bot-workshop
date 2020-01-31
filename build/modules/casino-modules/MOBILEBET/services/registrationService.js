@@ -4,6 +4,7 @@ const {
   getCookieStringFromResponse
 } = require("../../../utilities/cookieHelper");
 const { userAgentHeader, jsonHeader } = require("../../../utilities/headers");
+const { randomInt } = require("../../../utilities/helpers");
 
 async function register(user) {
   const body = {
@@ -25,7 +26,7 @@ async function register(user) {
     currency: user.currency,
     state: "",
     voucherCode: "",
-    deviceId: 1468621770,
+    deviceId: randomInt(10),
     acceptMarketingOffers: false,
     referrerUrl: "https://www.google.com/"
   };
@@ -50,5 +51,5 @@ async function register(user) {
 }
 
 module.exports = {
-  registerAccount
+  register
 };
